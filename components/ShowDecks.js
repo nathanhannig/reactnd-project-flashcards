@@ -1,43 +1,65 @@
 import React, { Component } from 'react'
 import { StyleSheet, FlatList, View, Text, TouchableOpacity } from 'react-native'
+import { connect } from 'react-redux'
+import { receiveDecks } from '../actions'
+import { AppLoading} from 'expo'
 import Card from './Card'
 import CardSection from './CardSection'
+import { getDecks } from '../utils/api'
 
-const ShowDecks = (props) => {
-  const { titleContainer, titleStyle, cardCountStyle } = styles
+class ShowDecks extends Component {
+  state = {
+    ready: false,
+  }
 
-  return (
-    <View>
-      <Card>
-        <FlatList
-          data={[
-            { key: '1', name: 'React' },
-            { key: '2', name: 'Redux' },
-            { key: '3', name: 'HTML' },
-            { key: '4', name: 'Javascript' },
-            { key: '5', name: 'HTML' },
-            { key: '6', name: 'Python' },
-            { key: '7', name: 'CSS' },
-            { key: '8', name: 'Historical Figures of the 1600s' },
-            { key: '9', name: 'Computer Games' },
-            { key: '10', name: 'Mathematics' }]}
-          renderItem={({ item }) => {
-            return (
-              <TouchableOpacity
-                onPress={() => props.navigation.navigate('ShowDeck', { deckName: item.name })}>
-                <CardSection>
-                  <View style={titleContainer}>
-                    <Text style={titleStyle}>{item.name}</Text>
-                    <Text style={cardCountStyle}>{item.key} cards</Text>
-                  </View>
-                </CardSection>
-              </TouchableOpacity>
-            )
-          }}
-        />
-      </Card>
-    </View>
-  )
+  componentDidMount() {
+    const { dispatch } = this.props
+
+    getDecks()
+      .then((decks) => dispatch(receiveDecks(decks)))
+      .then(() => this.setState(() => ({ready: true})))
+  }
+
+  render() {
+    const { titleContainer, titleStyle, cardCountStyle } = styles
+    const { decks } = this.props
+    const { ready } = this.state
+
+    if (ready === false) {
+      return <AppLoading />
+    }
+
+    const flattenData = Object.keys(this.props.decks).map((deckId) => {
+      return {
+        key: deckId,
+        title: this.props.decks[deckId].title,
+        cardCount: this.props.decks[deckId].questions.length,
+      }
+    })
+
+    return (
+      <View>
+        <Card>
+          <FlatList
+            data={flattenData}
+            renderItem={({ item }) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate('ShowDeck', { deckId: item.key, deckTitle: item.title })}>
+                  <CardSection>
+                    <View style={titleContainer}>
+                      <Text style={titleStyle}>{item.title}</Text>
+                      <Text style={cardCountStyle}>{item.cardCount} cards</Text>
+                    </View>
+                  </CardSection>
+                </TouchableOpacity>
+              )
+            }}
+          />
+        </Card>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -57,4 +79,12 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ShowDecks
+function mapStateToProps (state) {
+  return {
+    decks: state
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(ShowDecks)

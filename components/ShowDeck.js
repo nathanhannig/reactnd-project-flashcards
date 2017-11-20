@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
+import { connect } from 'react-redux'
 import Card from './Card'
 import CardSection from './CardSection'
 import Button from './Button'
 
 class ShowDeck extends Component {
-  static navigationOptions = ({ navigation }) => {
-    const { deckName } = navigation.state.params
+  static navigationOptions = ({navigation}) => {
+    const { deckTitle } = navigation.state.params
 
     return {
-      title: `${deckName}`
+      title: `${deckTitle}`
     }
   }
 
@@ -23,8 +24,12 @@ class ShowDeck extends Component {
       cardCountStyle,
       buttonContainer,
       quizButton,
-      buttonText
+      buttonText,
+      noCardsText
     } = styles
+
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
 
     return (
       <View style={container}>
@@ -32,13 +37,14 @@ class ShowDeck extends Component {
             <CardSection>
               <View style={deckContainer}>
                 <View style={titleContainer}>
-                  <Text style={titleStyle}>Historical Figures of the 1600s</Text>
-                  <Text style={cardCountStyle}>2 cards</Text>
+                  <Text style={titleStyle}>{deck.title}</Text>
+                  <Text style={cardCountStyle}>{deck.questions.length} cards</Text>
                 </View>
                 <View style={buttonContainer}>
                   <Button
-                  onPress={() => this.props.navigation.navigate('CreateCard')}>
-                  Add Card</Button>
+                    onPress={() => this.props.navigation.navigate('CreateCard')}>
+                    Add Card
+                  </Button>
                 </View>
               </View>
             </CardSection>
@@ -46,11 +52,16 @@ class ShowDeck extends Component {
           <Card>
             <CardSection>
               <View style={startQuizContainer}>
-                <Button
-                  overrideButton={quizButton} overrideText={buttonText}
-                  onPress={() => this.props.navigation.navigate('ShowQuiz', { deckName: 'Redux' })}>
-                  Start Quiz
-                </Button>
+                {deck.questions.length
+                  ? <Button
+                      overrideButton={quizButton} overrideText={buttonText}
+                      onPress={() => this.props.navigation.navigate('ShowQuiz', { deckId: deckId, deckTitle: deck.title })}>
+                      Start Quiz
+                    </Button>
+                  : <Text style={noCardsText}>
+                      There are no cards in this deck, please add a card to Start Quiz
+                    </Text>
+                }
               </View>
             </CardSection>
           </Card>
@@ -99,6 +110,19 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
   },
+  noCardsText: {
+    marginHorizontal: 20,
+    textAlign: 'center',
+    color: 'gray'
+  },
 })
 
-export default ShowDeck
+function mapStateToProps (state) {
+  return {
+    decks: state
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(ShowDeck)

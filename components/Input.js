@@ -13,8 +13,8 @@ const Input = ({ placeholder, value, onChangeText }) => {
         onChangeText={onChangeText}
       />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   inputStyle: {

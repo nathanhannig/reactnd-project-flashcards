@@ -2,6 +2,9 @@ import React from 'react';
 import { View, StatusBar } from 'react-native';
 import { TabNavigator, StackNavigator } from 'react-navigation'
 import { Constants } from 'expo'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import reducer from './reducers'
 import ShowDecks from './components/ShowDecks'
 import CreateDeck from './components/CreateDeck'
 import ShowDeck from './components/ShowDeck'
@@ -86,10 +89,12 @@ const MainNavigator = StackNavigator({
 export default class App extends React.Component {
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <StatusBarContainer backgroundColor={white} barStyle="light-content" />
-        <MainNavigator />
-      </View>
+      <Provider store={createStore(reducer)}>
+        <View style={{ flex: 1 }}>
+          <StatusBarContainer backgroundColor={white} barStyle="light-content" />
+          <MainNavigator />
+        </View>
+      </Provider>
     );
   }
 }
