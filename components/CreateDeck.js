@@ -28,11 +28,12 @@ class CreateDeck extends Component {
       [newDeck.key]: newDeck.entry
     }))
 
+    navigation.navigate('ShowDeck', { deckId: newDeck.key, deckTitle: newDeck.entry.title })
+
     this.setState({ title: '' })
 
-    navigation.goBack()
-
     saveDeckAPI(newDeck)
+
   }
 
   render() {

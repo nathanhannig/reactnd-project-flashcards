@@ -45,6 +45,10 @@ export function getDecksAPI () {
     .then(formatDecksResults)
 }
 
+export function clearDecksAPI () {
+  return AsyncStorage.removeItem(DECKS_STORAGE_KEY)
+}
+
 export function saveDeckAPI ({ entry, key }) {
   return AsyncStorage.mergeItem(
     DECKS_STORAGE_KEY,
