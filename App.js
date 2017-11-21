@@ -1,10 +1,10 @@
-import React from 'react';
-import { View, StatusBar } from 'react-native';
+import React, { Component } from 'react'
+import { View } from 'react-native'
 import { TabNavigator, StackNavigator } from 'react-navigation'
-import { Constants } from 'expo'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
 import reducer from './reducers'
+import StatusBarContainer from './components/StatusBarContainer'
 import ShowDecks from './components/ShowDecks'
 import CreateDeck from './components/CreateDeck'
 import ShowDeck from './components/ShowDeck'
@@ -13,14 +13,6 @@ import ShowQuiz from './components/ShowQuiz'
 import { setLocalNotification } from './utils/helpers'
 
 const store = createStore(reducer)
-
-function StatusBarContainer({ backgroundColor, ...props }) {
-  return (
-    <View style={{ backgroundColor, height: Constants.statusBarHeight }}>
-      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-    </View>
-  )
-}
 
 const Tabs = TabNavigator({
   ShowDecks: {
@@ -88,7 +80,7 @@ const MainNavigator = StackNavigator({
   }
 })
 
-export default class App extends React.Component {
+class App extends Component {
   componentDidMount() {
     setLocalNotification()
   }
@@ -101,6 +93,8 @@ export default class App extends React.Component {
           <MainNavigator />
         </View>
       </Provider>
-    );
+    )
   }
 }
+
+export default App

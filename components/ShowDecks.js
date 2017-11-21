@@ -24,11 +24,13 @@ class ShowDecks extends Component {
   }
 
   render() {
-    const { titleContainer, titleStyle, cardCountStyle } = styles
-    const { decks } = this.props
-    const { ready } = this.state
+    const {
+      titleContainer,
+      titleStyle,
+      cardCountStyle
+    } = styles
 
-    if (ready === false) {
+    if (this.state.ready === false) {
       return <AppLoading />
     }
 

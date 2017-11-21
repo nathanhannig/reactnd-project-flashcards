@@ -12,6 +12,29 @@ class CreateDeck extends Component {
   state = {
     title: ''
   }
+
+  handleCreate = () => {
+    const { dispatch, navigation } = this.props
+
+    const newDeck = {
+      key: this.state.title.replace(/[^a-z0-9]/gmi, ''),
+      entry: {
+        title: this.state.title,
+        questions: []
+      }
+    }
+
+    dispatch(saveDeck({
+      [newDeck.key]: newDeck.entry
+    }))
+
+    this.setState({ title: '' })
+
+    navigation.goBack()
+
+    saveDeckAPI(newDeck)
+  }
+
   render() {
     const {
       container,
@@ -21,7 +44,6 @@ class CreateDeck extends Component {
       inputContainer,
       buttonContainer
     } = styles
-    const { dispatch, navigation } = this.props
 
     return (
       <View style={container}>
@@ -39,25 +61,8 @@ class CreateDeck extends Component {
               </View>
               <View style={buttonContainer}>
                 <Button
-                  onPress={() => {
-                    const newDeck = {
-                      key: this.state.title.replace(/[^a-z0-9]/gmi, ''),
-                      entry: {
-                        title: this.state.title,
-                        questions: []
-                      }
-                    }
-
-                    dispatch(saveDeck({
-                      [newDeck.key]: newDeck.entry
-                    }))
-
-                    this.setState({ title: '' })
-
-                    navigation.goBack()
-
-                    saveDeckAPI(newDeck)
-                  }}
+                  disabled={this.state.title.length ? false : true}
+                  onPress={this.handleCreate}
                 >
                   Create
                 </Button>

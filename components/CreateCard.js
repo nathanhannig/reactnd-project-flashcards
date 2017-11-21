@@ -22,34 +22,57 @@ class CreateCard extends Component {
     answer: ''
   }
 
+  handleAdd = () => {
+    const { dispatch, navigation } = this.props
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
+
+    const replacementDeck = {
+      key: deckId,
+      entry: { ...deck }
+    }
+
+    replacementDeck.entry.questions.push({
+      question: this.state.question,
+      answer: this.state.answer
+    })
+
+    dispatch(saveDeck({
+      [replacementDeck.key]: replacementDeck.entry
+    }))
+
+    navigation.goBack()
+
+    saveDeckAPI(replacementDeck)
+  }
+
   render() {
     const {
       container,
       createCardContainer,
-      titleContainer,
-      titleStyle,
+      questionContainer,
+      answerContainer,
+      questionStyle,
+      answerStyle,
       inputContainer,
       buttonContainer
     } = styles
-    const { dispatch, navigation } = this.props
-    const { deckId } = this.props.navigation.state.params
-    const deck = this.props.decks[deckId]
 
     return (
       <View style={container}>
         <Card>
           <CardSection>
             <View style={createCardContainer}>
-              <View style={titleContainer}>
-                <Text style={titleStyle}>What is the question?</Text>
+              <View style={questionContainer}>
+                <Text style={questionStyle}>What is the question?</Text>
               </View>
               <View style={inputContainer}>
                 <Input placeholder="Question"
                   value={this.state.question}
                   onChangeText={(question) => this.setState({ question }) } />
               </View>
-              <View style={titleContainer}>
-                <Text style={titleStyle}>What is the answer?</Text>
+              <View style={answerContainer}>
+                <Text style={answerStyle}>What is the answer?</Text>
               </View>
               <View style={inputContainer}>
                 <Input placeholder="Answer"
@@ -58,25 +81,8 @@ class CreateCard extends Component {
               </View>
               <View style={buttonContainer}>
                 <Button
-                  onPress={() => {
-                    const replacementDeck = {
-                      key: deckId,
-                      entry: { ...deck }
-                    }
-
-                    replacementDeck.entry.questions.push({
-                      question: this.state.question,
-                      answer: this.state.answer
-                    })
-
-                    dispatch(saveDeck({
-                      [replacementDeck.key]: replacementDeck.entry
-                    }))
-
-                    navigation.goBack()
-
-                    saveDeckAPI(replacementDeck)
-                  }}>
+                disabled={this.state.question.length && this.state.answer.length ? false : true}
+                  onPress={this.handleAdd}>
                   Add
                 </Button>
               </View>
@@ -98,12 +104,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     height: 400,
   },
-  titleContainer: {
+  questionContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  titleStyle: {
+  answerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  questionStyle: {
+    fontSize: 30,
+    lineHeight: 50,
+    textAlign:'center',
+  },
+  answerStyle: {
     fontSize: 30,
     lineHeight: 50,
     textAlign:'center',

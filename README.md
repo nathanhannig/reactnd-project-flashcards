@@ -1,7 +1,7 @@
 # Mobile Flashvards
 This is the final assessment project for Udacity's Nanodegree React Native course.
 
-A front-end application called 'readable' was created from scratch to provide a Reddit-like application where users can create Posts, Comments, and Voting.
+A create-react-native-app application was created from scratch to provide a mobile flashcard application where users can create Decks and Questions to quiz themselves on topics.
 
 The application was built primarly using React Native, Expo, React Navigation, and Redux.
 

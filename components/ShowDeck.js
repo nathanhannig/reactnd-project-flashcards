@@ -27,7 +27,6 @@ class ShowDeck extends Component {
       buttonText,
       noCardsText
     } = styles
-
     const { deckId } = this.props.navigation.state.params
     const deck = this.props.decks[deckId]
 

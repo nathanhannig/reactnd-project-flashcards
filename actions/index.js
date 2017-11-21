@@ -14,10 +14,3 @@ export function saveDeck (deck) {
     deck,
   }
 }
-
-export function addCard (deck) {
-  return {
-    type: ADD_CARD,
-    deck,
-  }
-}
