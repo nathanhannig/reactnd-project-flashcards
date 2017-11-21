@@ -70,11 +70,21 @@ class ShowQuiz extends Component {
   })
   }
 
+  handleRestart = () => {
+    this.setState(() => {
+      return {
+        screen: 'question',
+        question: 1,
+        correct: 0
+      }
+    })
+  }
+
   quizScreen = () => {
     const {
       container,
       topContainer,
-      guessContainer,
+      bottomContainer,
       questionContainer,
       questionStyle,
       headerStyle,
@@ -120,7 +130,7 @@ class ShowQuiz extends Component {
         </Card>
         <Card>
           <CardSection>
-            <View style={guessContainer}>
+            <View style={bottomContainer}>
               <View style={buttonContainer}>
                 <Button
                   overrideButton={correctButton}
@@ -145,7 +155,12 @@ class ShowQuiz extends Component {
   scoreScreen = () => {
     const {
       container,
+      topContainer,
+      bottomContainer,
       scoreContainer,
+      buttonContainer,
+      deckButton,
+      buttonText,
       percentageStyle,
       percentSymbol,
       scoreStyle
@@ -158,11 +173,33 @@ class ShowQuiz extends Component {
       <View style={container}>
         <Card>
           <CardSection>
-            <View style={scoreContainer}>
-            <Text style={percentageStyle}>
-              {Math.round((this.state.correct/deck.questions.length) * 100)}<Text style={percentSymbol}>%</Text>
-            </Text>
-            <Text style={scoreStyle}>You answered {this.state.correct} of {deck.questions.length} correct</Text>
+            <View style={topContainer}>
+              <View style={scoreContainer}>
+              <Text style={percentageStyle}>
+                {Math.round((this.state.correct/deck.questions.length) * 100)}<Text style={percentSymbol}>%</Text>
+              </Text>
+              <Text style={scoreStyle}>You answered {this.state.correct} of {deck.questions.length} correct</Text>
+              </View>
+              <View style={buttonContainer}>
+              <Button
+                onPress={this.handleRestart}>
+                Restart Quiz
+              </Button>
+            </View>
+            </View>
+          </CardSection>
+        </Card>
+        <Card>
+          <CardSection>
+            <View style={bottomContainer}>
+              <View style={buttonContainer}>
+                <Button
+                  overrideButton={deckButton}
+                  overrideText={buttonText}
+                  onPress={() => { this.props.navigation.goBack() }}>
+                  Back to Deck
+                </Button>
+              </View>
             </View>
           </CardSection>
         </Card>
@@ -194,10 +231,10 @@ const styles = StyleSheet.create({
     height: 400,
     justifyContent: 'space-around',
   },
-  guessContainer: {
+  bottomContainer: {
     flex: 1,
     justifyContent: 'space-around',
-    height: 110,
+    height: 100,
   },
   questionContainer: {
     flex: 3,
@@ -227,11 +264,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#b71845',
     borderColor: '#b71845',
   },
+  deckButton: {
+    backgroundColor: '#007aff',
+    borderColor: '#007aff',
+  },
   buttonText: {
     color: '#fff',
   },
   scoreContainer: {
-    flex: 1,
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
     height: 400,

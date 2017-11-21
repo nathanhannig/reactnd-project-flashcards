@@ -8,7 +8,7 @@ The application was built primarly using React Native, Expo, React Navigation, a
 [Project Rubric](https://review.udacity.com/#!/rubrics/1021/view)
 
 ## Installation
-The application was developed for Android. It may work on iOS, but was not developed or tested for.
+The application was developed for the Android platform. It may work on iOS, but was not developed or tested for the iOS platform.
 
 * Install and start the application
     - `npm install`

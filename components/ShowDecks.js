@@ -5,8 +5,7 @@ import { AppLoading} from 'expo'
 import { receiveDecks } from '../actions'
 import Card from './Card'
 import CardSection from './CardSection'
-import { getDecksAPI } from '../utils/api'
-// import {AsyncStorage} from 'react-native'
+import { getDecksAPI, clearDecksAPI } from '../utils/api'
 
 class ShowDecks extends Component {
   state = {
@@ -16,7 +15,7 @@ class ShowDecks extends Component {
   componentDidMount() {
     const { dispatch } = this.props
 
-    // AsyncStorage.removeItem('Flashcards:decks')
+    // clearDecksAPI() // uncomment to easily reset to dummy data, dev use only
 
     getDecksAPI()
       .then((decks) => dispatch(receiveDecks(decks)))
