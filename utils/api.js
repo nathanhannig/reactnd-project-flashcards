@@ -28,24 +28,28 @@ function formatDecksResults (results) {
     }
   }
 
+  if(results === null) {
+    AsyncStorage.mergeItem(
+      DECKS_STORAGE_KEY,
+      JSON.stringify(dummyData)
+    )
+  }
+
   return results === null
     ? dummyData
     : JSON.parse(results)
 }
 
-export function getDecks () {
+export function getDecksAPI () {
   return AsyncStorage.getItem(DECKS_STORAGE_KEY)
     .then(formatDecksResults)
 }
 
-export function saveDeckTitle ({ entry, key }) {
-  return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
-    [key]: entry
-  }))
-}
-
-export function addCardToDeck ({ entry, key }) {
-  return AsyncStorage.mergeItem(DECKS_STORAGE_KEY, JSON.stringify({
-    [key]: entry
-  }))
+export function saveDeckAPI ({ entry, key }) {
+  return AsyncStorage.mergeItem(
+    DECKS_STORAGE_KEY,
+    JSON.stringify({
+      [key]: entry
+    })
+  )
 }

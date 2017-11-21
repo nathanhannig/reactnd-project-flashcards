@@ -10,7 +10,9 @@ import CreateDeck from './components/CreateDeck'
 import ShowDeck from './components/ShowDeck'
 import CreateCard from './components/CreateCard'
 import ShowQuiz from './components/ShowQuiz'
-import { white, blue } from './utils/colors'
+import { setLocalNotification } from './utils/helpers'
+
+const store = createStore(reducer)
 
 function StatusBarContainer({ backgroundColor, ...props }) {
   return (
@@ -38,10 +40,10 @@ const Tabs = TabNavigator({
     header: null
   },
   tabBarOptions: {
-    activeTintColor: white,
+    activeTintColor: '#fff',
     style: {
       height: 56,
-      backgroundColor: blue,
+      backgroundColor: '#007aff',
       shadowColor: 'rgba(0, 0, 0, 0.24)',
       shadowOffset: {
         width: 0,
@@ -60,38 +62,42 @@ const MainNavigator = StackNavigator({
   ShowDeck: {
     screen: ShowDeck,
     navigationOptions: {
-      headerTintColor: white,
+      headerTintColor: '#fff',
       headerStyle: {
-        backgroundColor: blue,
+        backgroundColor: '#007aff',
       }
     }
   },
   CreateCard: {
     screen: CreateCard,
     navigationOptions: {
-      headerTintColor: white,
+      headerTintColor: '#fff',
       headerStyle: {
-        backgroundColor: blue,
+        backgroundColor: '#007aff',
       }
     }
   },
   ShowQuiz: {
     screen: ShowQuiz,
     navigationOptions: {
-      headerTintColor: white,
+      headerTintColor: '#fff',
       headerStyle: {
-        backgroundColor: blue,
+        backgroundColor: '#007aff',
       }
     }
   }
 })
 
 export default class App extends React.Component {
+  componentDidMount() {
+    setLocalNotification()
+  }
+
   render() {
     return (
-      <Provider store={createStore(reducer)}>
+      <Provider store={store}>
         <View style={{ flex: 1 }}>
-          <StatusBarContainer backgroundColor={white} barStyle="light-content" />
+          <StatusBarContainer backgroundColor={'#fff'} barStyle="light-content" />
           <MainNavigator />
         </View>
       </Provider>

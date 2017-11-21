@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { StyleSheet, FlatList, View, Text, TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
-import { receiveDecks } from '../actions'
 import { AppLoading} from 'expo'
+import { receiveDecks } from '../actions'
 import Card from './Card'
 import CardSection from './CardSection'
-import { getDecks } from '../utils/api'
+import { getDecksAPI } from '../utils/api'
+// import {AsyncStorage} from 'react-native'
 
 class ShowDecks extends Component {
   state = {
@@ -15,7 +16,9 @@ class ShowDecks extends Component {
   componentDidMount() {
     const { dispatch } = this.props
 
-    getDecks()
+    // AsyncStorage.removeItem('Flashcards:decks')
+
+    getDecksAPI()
       .then((decks) => dispatch(receiveDecks(decks)))
       .then(() => this.setState(() => ({ready: true})))
   }
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
   },
   cardCountStyle: {
     fontSize: 16,
-    color: 'gray',
+    color: '#757575',
   },
 })
 

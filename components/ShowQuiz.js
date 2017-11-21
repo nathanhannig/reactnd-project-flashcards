@@ -145,7 +145,7 @@ class ShowQuiz extends Component {
         <Card>
           <CardSection>
             <View style={scoreContainer}>
-            <Text style={percentageStyle}>{(this.state.correct/deck.questions.length) * 100}%</Text>
+            <Text style={percentageStyle}>{Math.round((this.state.correct/deck.questions.length) * 100)}%</Text>
             <Text style={scoreStyle}>{this.state.correct} of {deck.questions.length} correct</Text>
             </View>
           </CardSection>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   },
   headerStyle: {
     fontSize: 16,
-    color: 'gray',
+    color: '#757575',
     textAlign:'center',
   },
   buttonContainer: {
@@ -203,16 +203,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   correctButton: {
-    backgroundColor: 'green',
-    borderColor: 'green',
+    backgroundColor: '#61B329',
+    borderColor: '#61B329',
     marginVertical: 6,
   },
   incorrectButton: {
-    backgroundColor: 'red',
-    borderColor: 'red',
+    backgroundColor: '#b71845',
+    borderColor: '#b71845',
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
   },
   scoreContainer: {
     flex: 1,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   percentageStyle: {
     fontSize: 36,
     textAlign:'center',
-    color: 'gray',
+    color: '#757575',
   },
   scoreStyle: {
     fontSize: 26,

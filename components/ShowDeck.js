@@ -42,7 +42,7 @@ class ShowDeck extends Component {
                 </View>
                 <View style={buttonContainer}>
                   <Button
-                    onPress={() => this.props.navigation.navigate('CreateCard')}>
+                    onPress={() => this.props.navigation.navigate('CreateCard', { deckId: deckId, deckTitle: deck.title })}>
                     Add Card
                   </Button>
                 </View>
@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
   },
   cardCountStyle: {
     fontSize: 16,
-    color: 'gray',
+    color: '#757575',
   },
   buttonContainer: {
     flex: 1,
@@ -104,16 +104,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   quizButton: {
-    backgroundColor: 'blue',
-    borderColor: 'blue',
+    backgroundColor: '#007aff',
+    borderColor: '#007aff',
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
   },
   noCardsText: {
     marginHorizontal: 20,
     textAlign: 'center',
-    color: 'gray'
+    color: '#757575'
   },
 })
 
