@@ -1,17 +1,17 @@
 import React from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
 
-const Button = ({ overrideButton, overrideText, onPress, children }) => {
+const Button = ({ disabled, onPress, overrideButton, overrideText, children }) => {
   const { buttonStyle, textStyle } = styles
 
   return (
-    <TouchableOpacity onPress={onPress} style={[buttonStyle, overrideButton]}>
+    <TouchableOpacity disabled={disabled} onPress={onPress} style={[buttonStyle, overrideButton]}>
       <Text style={[textStyle, overrideText]}>
         {children}
       </Text>
     </TouchableOpacity>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   buttonStyle: {

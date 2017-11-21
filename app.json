@@ -1,5 +1,13 @@
 {
   "expo": {
-    "sdkVersion": "22.0.0"
-  }
+    "sdkVersion": "22.0.0",
+    "orientation": "portrait",
+    "name": "ReactND-Project-Flashcards",
+    "description": "Mobile Flashcards",
+    "slug": "flashcards",
+    "version": "0.1.0",
+    "android": {
+      "package": "com.nathan.flashcards"
+    }
+  },
 }

@@ -1,23 +1,59 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
+import { connect } from 'react-redux'
+import { saveDeck } from '../actions'
 import Card from './Card'
 import CardSection from './CardSection'
 import Input from './Input'
 import Button from './Button'
+import { saveDeckAPI } from '../utils/api'
 
 class CreateCard extends Component {
-  static navigationOptions = () => {
+  static navigationOptions = ({ navigation }) => {
+    const { deckTitle } = navigation.state.params
+
     return {
-      title: 'Add Card'
+      title: `Add ${deckTitle} Card`
     }
+  }
+
+  state = {
+    question: '',
+    answer: ''
+  }
+
+  handleAdd = () => {
+    const { dispatch, navigation } = this.props
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
+
+    const replacementDeck = {
+      key: deckId,
+      entry: { ...deck }
+    }
+
+    replacementDeck.entry.questions.push({
+      question: this.state.question,
+      answer: this.state.answer
+    })
+
+    dispatch(saveDeck({
+      [replacementDeck.key]: replacementDeck.entry
+    }))
+
+    navigation.goBack()
+
+    saveDeckAPI(replacementDeck)
   }
 
   render() {
     const {
       container,
       createCardContainer,
-      titleContainer,
-      titleStyle,
+      questionContainer,
+      answerContainer,
+      questionStyle,
+      answerStyle,
       inputContainer,
       buttonContainer
     } = styles
@@ -27,25 +63,26 @@ class CreateCard extends Component {
         <Card>
           <CardSection>
             <View style={createCardContainer}>
-              <View style={titleContainer}>
-                <Text style={titleStyle}>What is the question?</Text>
+              <View style={questionContainer}>
+                <Text style={questionStyle}>What is the question?</Text>
               </View>
               <View style={inputContainer}>
                 <Input placeholder="Question"
-                  value={''}
-                  onChangeText={() => {return true}} />
+                  value={this.state.question}
+                  onChangeText={(question) => this.setState({ question }) } />
               </View>
-              <View style={titleContainer}>
-                <Text style={titleStyle}>What is the answer?</Text>
+              <View style={answerContainer}>
+                <Text style={answerStyle}>What is the answer?</Text>
               </View>
               <View style={inputContainer}>
                 <Input placeholder="Answer"
-                  value={''}
-                  onChangeText={() => {return true}} />
+                  value={this.state.answer}
+                  onChangeText={(answer) => this.setState({ answer }) } />
               </View>
               <View style={buttonContainer}>
                 <Button
-                  onPress={() => this.props.navigation.goBack()}>
+                disabled={this.state.question.length && this.state.answer.length ? false : true}
+                  onPress={this.handleAdd}>
                   Add
                 </Button>
               </View>
@@ -67,12 +104,22 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     height: 400,
   },
-  titleContainer: {
+  questionContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  titleStyle: {
+  answerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  questionStyle: {
+    fontSize: 30,
+    lineHeight: 50,
+    textAlign:'center',
+  },
+  answerStyle: {
     fontSize: 30,
     lineHeight: 50,
     textAlign:'center',
@@ -85,4 +132,12 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CreateCard
+function mapStateToProps (state) {
+  return {
+    decks: state
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(CreateCard)

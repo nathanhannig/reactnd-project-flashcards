@@ -1,21 +1,18 @@
-import React from 'react';
-import { View, StatusBar } from 'react-native';
+import React, { Component } from 'react'
+import { View } from 'react-native'
 import { TabNavigator, StackNavigator } from 'react-navigation'
-import { Constants } from 'expo'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import reducer from './reducers'
+import StatusBarContainer from './components/StatusBarContainer'
 import ShowDecks from './components/ShowDecks'
 import CreateDeck from './components/CreateDeck'
 import ShowDeck from './components/ShowDeck'
 import CreateCard from './components/CreateCard'
 import ShowQuiz from './components/ShowQuiz'
-import { white, blue } from './utils/colors'
+import { setLocalNotification } from './utils/helpers'
 
-function StatusBarContainer({ backgroundColor, ...props }) {
-  return (
-    <View style={{ backgroundColor, height: Constants.statusBarHeight }}>
-      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-    </View>
-  )
-}
+const store = createStore(reducer)
 
 const Tabs = TabNavigator({
   ShowDecks: {
@@ -35,10 +32,10 @@ const Tabs = TabNavigator({
     header: null
   },
   tabBarOptions: {
-    activeTintColor: white,
+    activeTintColor: '#fff',
     style: {
       height: 56,
-      backgroundColor: blue,
+      backgroundColor: '#007aff',
       shadowColor: 'rgba(0, 0, 0, 0.24)',
       shadowOffset: {
         width: 0,
@@ -57,39 +54,47 @@ const MainNavigator = StackNavigator({
   ShowDeck: {
     screen: ShowDeck,
     navigationOptions: {
-      headerTintColor: white,
+      headerTintColor: '#fff',
       headerStyle: {
-        backgroundColor: blue,
+        backgroundColor: '#007aff',
       }
     }
   },
   CreateCard: {
     screen: CreateCard,
     navigationOptions: {
-      headerTintColor: white,
+      headerTintColor: '#fff',
       headerStyle: {
-        backgroundColor: blue,
+        backgroundColor: '#007aff',
       }
     }
   },
   ShowQuiz: {
     screen: ShowQuiz,
     navigationOptions: {
-      headerTintColor: white,
+      headerTintColor: '#fff',
       headerStyle: {
-        backgroundColor: blue,
+        backgroundColor: '#007aff',
       }
     }
   }
 })
 
-export default class App extends React.Component {
+class App extends Component {
+  componentDidMount() {
+    setLocalNotification()
+  }
+
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <StatusBarContainer backgroundColor={white} barStyle="light-content" />
-        <MainNavigator />
-      </View>
-    );
+      <Provider store={store}>
+        <View style={{ flex: 1 }}>
+          <StatusBarContainer backgroundColor={'#fff'} barStyle="light-content" />
+          <MainNavigator />
+        </View>
+      </Provider>
+    )
   }
 }
+
+export default App

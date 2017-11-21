@@ -1,19 +1,76 @@
 import React, { Component } from 'react'
 import { StyleSheet, ScrollView, View, Text } from 'react-native'
+import { connect } from 'react-redux'
 import Card from './Card'
 import CardSection from './CardSection'
 import Button from './Button'
 
 class ShowQuiz extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { deckName } = navigation.state.params
+    const { deckTitle } = navigation.state.params
 
     return {
-      title: `${deckName} Quiz`
+      title: `${deckTitle} Quiz`
     }
   }
 
-  render() {
+  state = {
+    screen: 'question',
+    question: 1,
+    correct: 0,
+  }
+
+  handleSwitch = () => {
+    this.setState(() => {
+      if(this.state.screen === 'answer'){
+        return {screen: 'question'}
+      }
+
+      return {screen: 'answer'}
+    })
+  }
+
+  handleCorrect = () => {
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
+
+    this.setState((prevState) => {
+      //Check if no more questions, send to score screen
+      if(this.state.question === deck.questions.length) {
+        return {
+          screen: 'score',
+          correct: prevState.correct + 1
+        }
+      }
+
+      return {
+        screen: 'question',
+        question: prevState.question + 1,
+        correct: prevState.correct + 1
+      }
+    })
+  }
+
+  handleIncorrect = () => {
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
+
+    this.setState((prevState) => {
+      //Check if no more questions, send to score screen
+      if(this.state.question === deck.questions.length) {
+        return {
+          screen: 'score'
+        }
+      }
+
+      return {
+        screen: 'question',
+        question: prevState.question + 1
+      }
+  })
+  }
+
+  quizScreen = () => {
     const {
       container,
       topContainer,
@@ -26,42 +83,104 @@ class ShowQuiz extends Component {
       incorrectButton,
       buttonText
     } = styles
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
 
     return (
       <View style={container}>
-          <Card>
-            <CardSection>
-              <View style={topContainer}>
-                <View style={questionContainer}>
-                  <ScrollView contentContainerStyle={{flexGrow : 1, justifyContent : 'center'}}>
-                    <Text style={headerStyle}>Question</Text>
-                    <Text style={questionStyle}>This is a a real long question that will go on and on until the screen can no longer hold it's contents because the question is far to long for a small screen?< /Text>
-                  </ScrollView>
-                </View>
-                <View style={buttonContainer}>
-                  <Button>
-                    Show Answer
-                  </Button>
-                </View>
+        <Card>
+          <CardSection>
+            <View style={topContainer}>
+              <View style={questionContainer}>
+                <ScrollView contentContainerStyle={{flexGrow : 1, justifyContent : 'center'}}>
+                  <Text style={headerStyle}>
+                    {this.state.screen === 'question'
+                    ? 'Question '
+                    : 'Answer '}
+                    {this.state.question} of {deck.questions.length}
+                    </Text>
+                  <Text style={questionStyle}>
+                    {this.state.screen === 'question'
+                    ? deck.questions[this.state.question-1].question
+                    : deck.questions[this.state.question-1].answer}
+                  </Text>
+                </ScrollView>
               </View>
-            </CardSection>
-          </Card>
-          <Card>
-            <CardSection>
-              <View style={guessContainer}>
-                <View style={buttonContainer}>
-                  <Button overrideButton={correctButton} overrideText={buttonText}>
-                    Correct
-                  </Button>
-                  <Button overrideButton={incorrectButton} overrideText={buttonText}>
-                    Incorrect
-                  </Button>
-                </View>
+              <View style={buttonContainer}>
+                <Button
+                  onPress={this.handleSwitch}>
+                  Show
+                  {this.state.screen === 'question'
+                    ? ' Answer'
+                    : ' Question'}
+                </Button>
               </View>
-            </CardSection>
-          </Card>
+            </View>
+          </CardSection>
+        </Card>
+        <Card>
+          <CardSection>
+            <View style={guessContainer}>
+              <View style={buttonContainer}>
+                <Button
+                  overrideButton={correctButton}
+                  overrideText={buttonText}
+                  onPress={this.handleCorrect}>
+                  Correct
+                </Button>
+                <Button
+                  overrideButton={incorrectButton}
+                  overrideText={buttonText}
+                  onPress={this.handleIncorrect}>
+                  Incorrect
+                </Button>
+              </View>
+            </View>
+          </CardSection>
+        </Card>
       </View >
     )
+  }
+
+  scoreScreen = () => {
+    const {
+      container,
+      scoreContainer,
+      percentageStyle,
+      percentSymbol,
+      scoreStyle
+    } = styles
+
+    const { deckId } = this.props.navigation.state.params
+    const deck = this.props.decks[deckId]
+
+    return (
+      <View style={container}>
+        <Card>
+          <CardSection>
+            <View style={scoreContainer}>
+            <Text style={percentageStyle}>
+              {Math.round((this.state.correct/deck.questions.length) * 100)}<Text style={percentSymbol}>%</Text>
+            </Text>
+            <Text style={scoreStyle}>You answered {this.state.correct} of {deck.questions.length} correct</Text>
+            </View>
+          </CardSection>
+        </Card>
+      </View >
+    )
+  }
+
+  render() {
+    if(this.state.screen === 'score') {
+      return (
+        this.scoreScreen()
+      )
+    }
+
+    return (
+      this.quizScreen()
+    )
+
   }
 }
 
@@ -91,7 +210,7 @@ const styles = StyleSheet.create({
   },
   headerStyle: {
     fontSize: 16,
-    color: 'gray',
+    color: '#757575',
     textAlign:'center',
   },
   buttonContainer: {
@@ -100,17 +219,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   correctButton: {
-    backgroundColor: 'green',
-    borderColor: 'green',
+    backgroundColor: '#61B329',
+    borderColor: '#61B329',
     marginVertical: 6,
   },
   incorrectButton: {
-    backgroundColor: 'red',
-    borderColor: 'red',
+    backgroundColor: '#b71845',
+    borderColor: '#b71845',
   },
   buttonText: {
-    color: 'white',
+    color: '#fff',
+  },
+  scoreContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 400,
+  },
+  percentageStyle: {
+    fontSize: 46,
+    textAlign:'center',
+    color: '#757575',
+    marginBottom: 20,
+  },
+  percentSymbol: {
+    fontSize: 32,
+  },
+  scoreStyle: {
+    fontSize: 24,
+    textAlign:'center',
   },
 })
 
-export default ShowQuiz
+function mapStateToProps (state) {
+  return {
+    decks: state
+  }
+}
+
+export default connect(
+  mapStateToProps,
+)(ShowQuiz)

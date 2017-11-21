@@ -1,37 +1,78 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
+import { connect } from 'react-redux'
+import { saveDeck } from '../actions'
 import Card from './Card'
 import CardSection from './CardSection'
 import Input from './Input'
 import Button from './Button'
+import { saveDeckAPI } from '../utils/api'
 
-const CreateDeck = (props) => {
-  const { container, createDeckContainer, titleContainer, titleStyle, inputContainer, buttonContainer } = styles
+class CreateDeck extends Component {
+  state = {
+    title: ''
+  }
 
-  return (
-    <View style={container}>
-      <Card>
-        <CardSection>
-          <View style={createDeckContainer}>
-            <View style={titleContainer}>
-              <Text style={titleStyle}>What is the title of your new deck?</Text>
+  handleCreate = () => {
+    const { dispatch, navigation } = this.props
+
+    const newDeck = {
+      key: this.state.title.replace(/[^a-z0-9]/gmi, ''),
+      entry: {
+        title: this.state.title,
+        questions: []
+      }
+    }
+
+    dispatch(saveDeck({
+      [newDeck.key]: newDeck.entry
+    }))
+
+    this.setState({ title: '' })
+
+    navigation.goBack()
+
+    saveDeckAPI(newDeck)
+  }
+
+  render() {
+    const {
+      container,
+      createDeckContainer,
+      titleContainer,
+      titleStyle,
+      inputContainer,
+      buttonContainer
+    } = styles
+
+    return (
+      <View style={container}>
+        <Card>
+          <CardSection>
+            <View style={createDeckContainer}>
+              <View style={titleContainer}>
+                <Text style={titleStyle}>What is the title of your new deck?</Text>
+              </View>
+              <View style={inputContainer}>
+                <Input
+                  placeholder="Deck title"
+                  value={this.state.title}
+                  onChangeText={(title) => this.setState({ title }) } />
+              </View>
+              <View style={buttonContainer}>
+                <Button
+                  disabled={this.state.title.length ? false : true}
+                  onPress={this.handleCreate}
+                >
+                  Create
+                </Button>
+              </View>
             </View>
-            <View style={inputContainer}>
-              <Input placeholder="Deck title"
-                value={''}
-                onChangeText={() => {return true}} />
-            </View>
-            <View style={buttonContainer}>
-              <Button
-              onPress={() => props.navigation.goBack()}>
-                Create
-              </Button>
-            </View>
-          </View>
-        </CardSection>
-      </Card>
-    </View>
-  )
+          </CardSection>
+        </Card>
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
@@ -62,4 +103,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default CreateDeck
+export default connect()(CreateDeck)
