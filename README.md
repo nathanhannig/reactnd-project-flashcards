@@ -1,9 +1,9 @@
-# Mobile Flashvards
+# Mobile Flashcards
 This is the final assessment project for Udacity's Nanodegree React Native course.
 
 A create-react-native-app application was created from scratch to provide a mobile flashcard application where users can create Decks and Questions to quiz themselves on topics.
 
-The application was built primarly using React Native, Expo, React Navigation, and Redux.
+The application was built primarily using React Native, Expo, React Navigation, and Redux.
 
 [Project Rubric](https://review.udacity.com/#!/rubrics/1021/view)
 
