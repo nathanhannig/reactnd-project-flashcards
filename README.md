@@ -7,6 +7,8 @@ The application was built primarily using React Native, Expo, React Navigation, 
 
 [Project Rubric](https://review.udacity.com/#!/rubrics/1021/view)
 
+![Image of Mobile Flashcards App](/flashcards.gif)
+
 ## Installation
 The application was developed for the Android platform. It may work on iOS, but was not developed or tested for the iOS platform.
 
